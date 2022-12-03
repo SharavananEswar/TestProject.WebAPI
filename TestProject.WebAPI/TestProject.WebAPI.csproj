@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZipPay.EF.MySQLProvider\ZipPay.EF.MySQLProvider.csproj" />
+    <ProjectReference Include="..\ZipPay.Model\ZipPay.Model.csproj" />
+    <ProjectReference Include="..\ZipPay.Repository.Contracts\ZipPay.Repository.Contracts.csproj" />
+    <ProjectReference Include="..\ZipPay.Repository\ZipPay.Repository.csproj" />
+    <ProjectReference Include="..\ZipPay.Service.Contracts\ZipPay.Service.Contracts.csproj" />
+    <ProjectReference Include="..\ZipPay.Service\ZipPay.Service.csproj" />
+    <ProjectReference Include="..\ZipPay.WebApi.DTOs\ZipPay.WebApi.DTOs.csproj" />
+  </ItemGroup>
+
+</Project>
