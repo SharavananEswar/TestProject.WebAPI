@@ -26,12 +26,11 @@ namespace TestProject.WebAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("api/v1/user")]
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [ResponseType(typeof(UserResponse))]
-        public IActionResult Create([System.Web.Http.FromBody] CreateUserRequest request)
+        public async Task<IActionResult> Create([System.Web.Http.FromBody] CreateUserRequest request)
         {
             try
             {
-                //TODO: uri is empty.
-                return Created("", _usersService.Create(request));
+                return Created("", await _usersService.CreateAsync(request));
             }
             catch (ArgumentNullException ex)
             {
@@ -54,11 +53,11 @@ namespace TestProject.WebAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("api/v1/user/{id}")]
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [ResponseType(typeof(UserResponse))]
-        public IActionResult Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                return Ok(_usersService.Get(id));
+                return Ok(await _usersService.GetAsync(id));
             }
             catch (ArgumentNullException ex)
             {
@@ -72,15 +71,15 @@ namespace TestProject.WebAPI.Controllers
             }
         }
 
-        // POST api/v1/<users>
+        // LIST api/v1/<users>
         [Microsoft.AspNetCore.Mvc.Route("api/v1/users")]
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [ResponseType(typeof(UsersListResponse))]
-        public IActionResult List([FromQuery] int page = 0, [FromQuery] int pageSize = 100)
+        public async Task<IActionResult> List([FromQuery] int page = 0, [FromQuery] int pageSize = 100)
         {
             try
             {
-                return Ok(_usersService.List(page, pageSize));
+                return Ok(await _usersService.ListAsync(page, pageSize));
             }
             catch (Exception ex)
             {

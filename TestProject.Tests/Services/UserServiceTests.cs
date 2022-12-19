@@ -28,12 +28,12 @@ namespace TestProject.Tests.Services
                 MonthlySalary = 1000
             };
 
-            _userRepository.Setup(s => s.Create(
+            _userRepository.Setup(s => s.CreateAsync(
                 It.IsAny<User>()))
-                .Returns(new User() { EmailAddress = request.EmailAddress, UserName = request.UserName, MonthlyExpenses = request.MonthlyExpenses, MonthlySalary = request.MonthlySalary });
+                .ReturnsAsync(new User() { EmailAddress = request.EmailAddress, UserName = request.UserName, MonthlyExpenses = request.MonthlyExpenses, MonthlySalary = request.MonthlySalary });
 
             var userAccService = new UsersService(_userRepository.Object);
-            var response = userAccService.Create(request);
+            var response = userAccService.CreateAsync(request).Result;
 
             Assert.True(response.EmailAddress == request.EmailAddress);
             Assert.Equal(response.UserName, request.EmailAddress);
@@ -51,7 +51,7 @@ namespace TestProject.Tests.Services
             };
 
             var userAccService = new UsersService(_userRepository.Object);
-            Assert.Throws<ArgumentException>(() => userAccService.Create(request));
+            Assert.Throws<ArgumentException>(() => userAccService.CreateAsync(request).Result);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace TestProject.Tests.Services
             };
 
             var userAccService = new UsersService(_userRepository.Object);
-            Assert.Throws<ArgumentException>(() => userAccService.Create(request));
+            Assert.Throws<ArgumentException>(() => userAccService.CreateAsync(request).Result);
         }
 
         [Fact]
@@ -97,10 +97,10 @@ namespace TestProject.Tests.Services
                 }
             };
 
-            _userRepository.Setup(s => s.List()).Returns(list);
+            _userRepository.Setup(s => s.ListAsync()).ReturnsAsync(list);
 
             var userService = new UsersService(_userRepository.Object);
-            var response = userService.List(0, 100);
+            var response = userService.ListAsync(0, 100).Result;
 
             Assert.True(response.TotalCount == 3);
             Assert.True(response.Items.Length == 3);
@@ -134,10 +134,10 @@ namespace TestProject.Tests.Services
                 }
             };
 
-            _userRepository.Setup(s => s.List()).Returns(list);
+            _userRepository.Setup(s => s.ListAsync()).ReturnsAsync(list);
 
             var userService = new UsersService(_userRepository.Object);
-            var response = userService.List(0, 1);
+            var response = userService.ListAsync(0, 1).Result;
 
             Assert.True(response.TotalCount == 3);
             Assert.True(response.Items.Length == 1);
@@ -171,10 +171,10 @@ namespace TestProject.Tests.Services
                 }
             };
 
-            _userRepository.Setup(s => s.List()).Returns(list);
+            _userRepository.Setup(s => s.ListAsync()).ReturnsAsync(list);
 
             var userService = new UsersService(_userRepository.Object);
-            var response = userService.List(10, 10);
+            var response = userService.ListAsync(10, 10).Result;
 
             Assert.True(response.TotalCount == 3);
             Assert.True(response.Items.Length == 0);

@@ -27,16 +27,16 @@ namespace TestProject.Tests.Services
                 UserId = 1
             };
 
-            _userAccounntRepository.Setup(s => s.Create(
+            _userAccounntRepository.Setup(s => s.CreateAsync(
                 It.IsAny<UserAccount>()))
-                .Returns(new UserAccount() { Id = request.UserId, UserId = request.UserId});
+                .ReturnsAsync(new UserAccount() { Id = request.UserId, UserId = request.UserId});
 
-            _userRepository.Setup(s => s.Select(
+            _userRepository.Setup(s => s.SelectAsync(
                 It.IsAny<long>()))
-                .Returns(new User() { Id = request.UserId, EmailAddress = "" });
+                .ReturnsAsync(new User() { Id = request.UserId, EmailAddress = "" });
 
             var userAccService = new UserAccountsService(_userAccounntRepository.Object, _userRepository.Object);
-            var response = userAccService.Create(request);
+            var response = userAccService.CreateAsync(request).Result;
 
             Assert.True(response.UserId == request.UserId);
         }
@@ -49,12 +49,12 @@ namespace TestProject.Tests.Services
                 UserId = 1
             };
 
-            _userRepository.Setup(s => s.Select(
+            _userRepository.Setup(s => s.SelectAsync(
                 It.IsAny<long>()))
-                .Returns((User)null);
+                .ReturnsAsync((User)null);
 
             var userAccService = new UserAccountsService(_userAccounntRepository.Object, _userRepository.Object);
-            Assert.Throws<ArgumentNullException>(() => userAccService.Create(request));
+            Assert.Throws<ArgumentNullException>(() => userAccService.CreateAsync(request).Result);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace TestProject.Tests.Services
             };
 
             var userAccService = new UserAccountsService(_userAccounntRepository.Object, _userRepository.Object);
-            Assert.Throws<ArgumentException>(() => userAccService.Create(request));
+            Assert.Throws<ArgumentException>(() => userAccService.CreateAsync(request).Result);
         }
 
         [Fact]
@@ -94,10 +94,10 @@ namespace TestProject.Tests.Services
                 }
             };
 
-            _userAccounntRepository.Setup(s => s.List()).Returns(list);
+            _userAccounntRepository.Setup(s => s.ListAsync()).ReturnsAsync(list);
 
             var userAccService = new UserAccountsService(_userAccounntRepository.Object, _userRepository.Object);
-            var response = userAccService.List(0, 100);
+            var response = userAccService.ListAsync(0, 100).Result;
 
             Assert.True(response.TotalCount == 3);
             Assert.True(response.Items.Length == 3);
@@ -128,10 +128,10 @@ namespace TestProject.Tests.Services
                 }
             };
 
-            _userAccounntRepository.Setup(s => s.List()).Returns(list);
+            _userAccounntRepository.Setup(s => s.ListAsync()).ReturnsAsync(list);
 
             var userAccService = new UserAccountsService(_userAccounntRepository.Object, _userRepository.Object);
-            var response = userAccService.List(0, 1);
+            var response = userAccService.ListAsync(0, 1).Result;
 
             Assert.True(response.TotalCount == 3);
             Assert.True(response.Items.Length == 1);

@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZipPay.EF.MySQLProvider;
 using ZipPay.Model;
 using ZipPay.Repository.Contracts;
@@ -17,47 +12,50 @@ namespace ZipPay.Repository
 
         protected RepositoryBase(ZipPayEFContext context)
         {
-            this.Context = context;
+            Context = context;
         }
 
-        public virtual T Create(T entity)
+        public async virtual Task<T> CreateAsync(T entity)
         {
-            this.Table.Add(entity);
-            this.Context.SaveChanges();
+            await Table.AddAsync(entity);
+            Context.SaveChanges();
 
             return entity;
         }
 
-        public virtual T Update(T entity)
+        public async virtual Task<T> UpdateAsync(T entity)
         {
-            var updatee = this.Table.SingleOrDefault(e => e.Id == entity.Id);
+            var updatee = await Table.SingleOrDefaultAsync(e => e.Id == entity.Id);
             if (updatee == null)
                 return null;
 
             updatee = entity;
-            this.Context.SaveChanges();
+            await Context.SaveChangesAsync();
 
             return entity;
         }
 
-        public virtual T Select(long id)
+        public async virtual Task<T> SelectAsync(long id)
         {
-            return this.Table.SingleOrDefault(e => e.Id == id);
+            return await Table.SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public virtual void Delete(long id)
+        public async virtual Task DeleteAsync(long id)
         {
-            var updatee = this.Table.SingleOrDefault(e => e.Id == id);
+            var updatee = await this.Table.SingleOrDefaultAsync(e => e.Id == id);
             if (updatee == null)
                 return;
 
-            this.Table.Remove(updatee);
-            this.Context.SaveChanges();
+            Table.Remove(updatee);
+            await Context.SaveChangesAsync();
         }
 
-        public virtual IEnumerable<T> List()
+        public async virtual Task<IEnumerable<T>> ListAsync()
         {
-            return this.Table.OrderBy(e => e.Id);
+            return await Task.Run(() =>
+            {
+                return Table.OrderBy(e => e.Id);
+            });
         }
     }
 }

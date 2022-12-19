@@ -4,8 +4,8 @@ namespace ZipPay.Service.Contracts
 {
     public interface IUsersService
     {
-        UserResponse Create(CreateUserRequest request);
-        UserResponse Get(long id);
-        UsersListResponse List(int startIndex, int pageSize);
+        Task<UserResponse> CreateAsync(CreateUserRequest request);
+        Task<UserResponse> GetAsync(long id);
+        Task<UsersListResponse> ListAsync(int startIndex, int pageSize);
     }
 }

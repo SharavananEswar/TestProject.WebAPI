@@ -18,21 +18,14 @@ namespace ZipPay.Service
             _userRepository = userRepository;
         }
 
-        public UserAccountResponse Create(CreateUserAccountRequest request)
+        public async Task<UserAccountResponse> CreateAsync(CreateUserAccountRequest request)
         {
-            if (request.UserId <= 0)
-            {
-                throw new ArgumentException($"Specified user id is not valid");
-            }
-
-            var user = _userRepository.Select(request.UserId);
+            var user = await _userRepository.SelectAsync(request.UserId);
             if (user == null)
-            {
                 throw new ArgumentNullException($"User {request.UserId} is not found");
-            }
 
             var product = 
-                _userAccounntRepository.Create(new UserAccount()
+                await _userAccounntRepository.CreateAsync(new UserAccount()
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
@@ -42,14 +35,14 @@ namespace ZipPay.Service
             return ToResponse(product);
         }
 
-        public UsersAccountsListResponse List(int page, int pageSize)
+        public async Task<UsersAccountsListResponse> ListAsync(int page, int pageSize)
         {
-            var list = _userAccounntRepository.List().ToList();
+            var accounts = (await _userAccounntRepository.ListAsync()).ToList();
 
             return new UsersAccountsListResponse()
             {
-                Items = list.Skip((page - 1) * pageSize).Take(pageSize).Select(x => ToResponse(x)).ToArray(),
-                TotalCount = list.Count
+                Items = accounts.Skip((page - 1) * pageSize).Take(pageSize).Select(x => ToResponse(x)).ToArray(),
+                TotalCount = accounts.Count
             };                
         }
 

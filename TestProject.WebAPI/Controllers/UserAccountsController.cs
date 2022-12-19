@@ -26,12 +26,12 @@ namespace TestProject.WebAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("api/v1/useraccount")]
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [ResponseType(typeof(UserAccountResponse))]
-        public IActionResult Create([System.Web.Http.FromBody] CreateUserAccountRequest request)
+        public async Task<IActionResult> Create([System.Web.Http.FromBody] CreateUserAccountRequest request)
         {
             try
             {
                 //TODO: uri is empty.
-                return Created("", _userAccountService.Create(request));
+                return Created("", await _userAccountService.CreateAsync(request));
             }
             catch (ArgumentNullException ex)
             {
@@ -54,11 +54,11 @@ namespace TestProject.WebAPI.Controllers
         [Microsoft.AspNetCore.Mvc.Route("api/v1/useraccounts")]
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [ResponseType(typeof(UsersAccountsListResponse))]
-        public IActionResult List([FromQuery] int page = 0, [FromQuery] int pageSize = 100)
+        public async Task<IActionResult> List([FromQuery] int page = 0, [FromQuery] int pageSize = 100)
         {
             try
             {
-                return Ok(_userAccountService.List(page, pageSize));
+                return Ok(await _userAccountService.ListAsync(page, pageSize));
             }
             catch (Exception ex)
             {

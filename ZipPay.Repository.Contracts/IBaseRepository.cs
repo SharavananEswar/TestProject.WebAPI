@@ -8,10 +8,10 @@ namespace ZipPay.Repository.Contracts
 
     public interface IBaseRepository<IdType, T> where T : class, IEntity<long>
     {
-        T Create(T entity);
-        T Update(T entity);
-        T Select(IdType id);
-        IEnumerable<T> List();
-        void Delete(IdType id);
+        Task<T> CreateAsync(T entity);
+        Task<T> UpdateAsync(T entity);
+        Task<T> SelectAsync(IdType id);
+        Task<IEnumerable<T>> ListAsync();
+        Task DeleteAsync(IdType id);
     }
 }

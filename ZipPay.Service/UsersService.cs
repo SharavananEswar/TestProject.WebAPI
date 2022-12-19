@@ -14,19 +14,9 @@ namespace ZipPay.Service
             _userRepository = userRepository;
         }
 
-        public UserResponse Create(CreateUserRequest request)
+        public async Task<UserResponse> CreateAsync(CreateUserRequest request)
         {
-            if(request.MonthlyExpenses <= 0)
-            {
-                throw new ArgumentException($"Specified monthly expense is not valid");
-            }
-
-            if (request.MonthlySalary <= 0)
-            {
-                throw new ArgumentException($"Specified monthly salary is not valid");
-            }
-
-            var product = _userRepository.Create(new User()
+            var product = await _userRepository.CreateAsync(new User()
             {
                 UserName = request.UserName,
                 EmailAddress = request.EmailAddress,
@@ -38,23 +28,23 @@ namespace ZipPay.Service
             return ToResponse(product);
         }
 
-        public UserResponse Get(long id)
+        public async Task<UserResponse> GetAsync(long id)
         {
-            var entity = _userRepository.Select(id);
+            var entity = await _userRepository.SelectAsync(id);
             if (entity == null)
                 throw new ArgumentNullException("User doesn't exists");
 
             return ToResponse(entity);
         }
 
-        public UsersListResponse List(int page, int pageSize)
+        public async Task<UsersListResponse> ListAsync(int page, int pageSize)
         {
-            var list = _userRepository.List().ToList();
+            var users = (await _userRepository.ListAsync()).ToList();
 
             return new UsersListResponse()
             {
-                Items = list.Skip((page - 1) * pageSize).Take(pageSize).Select(x => ToResponse(x)).ToArray(),
-                TotalCount = list.Count
+                Items = users.Skip((page - 1) * pageSize).Take(pageSize).Select(x => ToResponse(x)).ToArray(),
+                TotalCount = users.Count
             };                
         }
 

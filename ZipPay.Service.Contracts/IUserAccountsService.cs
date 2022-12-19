@@ -4,7 +4,7 @@ namespace ZipPay.Service.Contracts
 {
     public interface IUserAccountsService
     {
-        UserAccountResponse Create(CreateUserAccountRequest request);
-        UsersAccountsListResponse List(int startIndex, int pageSize);
+        Task<UserAccountResponse> CreateAsync(CreateUserAccountRequest request);
+        Task<UsersAccountsListResponse> ListAsync(int startIndex, int pageSize);
     }
 }

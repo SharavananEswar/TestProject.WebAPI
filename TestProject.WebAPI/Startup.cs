@@ -1,4 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using TestProject.WebAPI.Middlewares;
+using TestProject.WebAPI.Validations;
 using ZipPay.EF.MySQLProvider;
 using ZipPay.Repository;
 using ZipPay.Repository.Contracts;
@@ -19,10 +22,12 @@ namespace TestProject.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateUserRequestValidator>());
 
             services.AddDBContext(Configuration.GetConnectionString("DefaultConnection"));
+
+            services.AddValidatorsFromAssemblyContaining<CreateUserRequestValidator>();
 
             services.AddTransient<IUserAccountsRepository, UserAccountsRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -38,6 +43,9 @@ namespace TestProject.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // global error handler
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseHttpsRedirection();
 
